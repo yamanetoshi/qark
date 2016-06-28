@@ -541,7 +541,8 @@ if __name__ == "__main__":
                 unpackAPK.unpack()
                 break
             except Exception as e:
-                continue
+                common.logger.error("Unexpected error: " + str(e))
+                sys.exit(1)
 
         try:
             package = defaultdict(list)
