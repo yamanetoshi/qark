@@ -195,14 +195,14 @@ def initialize_logger():
 
 	# create console handler and set level to INFO
 	handler = ColorizingStreamHandler(sys.stdout)
-	handler.setLevel(logging.INFO)
+	handler.setLevel(logging.DEBUG)
 	formatter = logging.Formatter("%(levelname)s - %(message)s")
 	handler.setFormatter(formatter)
 	logger.addHandler(handler)
 
 	# create error file handler and set level to INFO
 	handler = logging.FileHandler(os.path.join(rootDir +"/logs/", "info.log"),"w", encoding=None, delay="true")
-	handler.setLevel(logging.INFO)
+	handler.setLevel(logging.DEBUG)
 	formatter = logging.Formatter("%(levelname)s - %(message)s")
 	handler.setFormatter(formatter)
 	logger.addHandler(handler)
