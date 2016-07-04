@@ -249,6 +249,7 @@ def write(identity, data, tag=None):
     except Exception as e:
         common.reportInitSuccess=False
         common.logger.debug("Report writing error: " + str(e))
+        common.logger.debug("identity:  " + identity)
 
 def write_counters():
     try:
