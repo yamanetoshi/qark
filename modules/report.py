@@ -205,7 +205,7 @@ def writeSection(sec,data_list):
             pre_rendered_html2.find("div", id=str(section[sec] + "-issues-list")).append(new_div_tag_1)
 
             with open(common.reportDir + "/report.html", "w") as fh:
-                fh.write(str(pre_rendered_html2.prettify()))
+                fh.write(str(pre_rendered_html2.prettify().encode('utf-8')))
             fh.close()
     except Exception as e:
         logger.debug(e.message)
@@ -229,7 +229,7 @@ def write_manifest(data):
                 pre_rendered_html.find("pre", id="rawmanifest").append(new_code_div)
 
             with open(common.reportDir + "/report.html", "w") as fh:
-                fh.write(str(pre_rendered_html.prettify()))
+                fh.write(str(pre_rendered_html.prettify().encode('utf-8')))
             fh.close()
         except Exception as e:
             common.logger.debug("Error writing manifest: " + str(e))
@@ -250,7 +250,7 @@ def write(identity, data, tag=None):
             pre_rendered_html.find("span", id=identity).append(new_span_tag)
 
         with open(common.reportDir + "/report.html", "w") as fh:
-            fh.write(str(pre_rendered_html.prettify()))
+            fh.write(str(pre_rendered_html.prettify().encode('utf-8')))
         fh.close()
     except Exception as e:
         common.reportInitSuccess=False
@@ -286,7 +286,7 @@ def write_counters():
             pre_rendered_html.find("h1", id="debug_count").append(new_div_tag3)
 
             with open(common.reportDir + "/report.html", "w") as fh:
-                fh.write(str(pre_rendered_html.prettify()))
+                fh.write(str(pre_rendered_html.prettify().encode('utf-8')))
             fh.close()
     except Exception as e:
         common.logger.debug("Error in write_counters: " + str(e))
@@ -348,7 +348,7 @@ def write_badger(identity, sev, data, extra=None):
                 pre_rendered_html.find("div", id=identity).insert(0, new_div_tag)
 
             with open(common.reportDir + "/report.html", "w") as fh:
-                fh.write(str(pre_rendered_html.prettify()))
+                fh.write(str(pre_rendered_html.prettify().encode('utf-8')))
             fh.close()
         except Exception as e:
             common.logger.debug("Error badger don't care: " + str(e))
@@ -412,7 +412,7 @@ def write_adb_commands(identity, sev, data, extra=None, infobartext=None):
             pre_rendered_html.find("div", id=identity).insert(0, new_div_tag)
 
         with open(common.reportDir + "/report.html", "w") as fh:
-            fh.write(str(pre_rendered_html.prettify()))
+            fh.write(str(pre_rendered_html.prettify().encode('utf-8')))
         fh.close()
     except Exception as e:
         common.logger.debug("Error writing ADB commands to report: " + str(e))
