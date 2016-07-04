@@ -64,7 +64,9 @@ severity[Severity.ERROR] = "Error"
 
 def writeSection(sec,data_list):
     try:
-        pre_rendered = open(common.reportDir + "/report.html",'r').read()
+        with open(common.reportDir + "/report.html",'r') as f:
+            pre_rendered = f.read()
+
         pre_rendered_html2 = BeautifulSoup(pre_rendered,'html5lib')
 
         list_of_files = []
@@ -216,7 +218,9 @@ def write_manifest(data):
     if common.reportInitSuccess:
         try:
             if os.path.exists(common.reportDir + "/report.html"):
-                pre_rendered = open(common.reportDir + "/report.html",'r').read()
+                with open(common.reportDir + "/report.html",'r') as f:
+                    pre_rendered = f.read()
+
                 pre_rendered_html = BeautifulSoup(pre_rendered,'html5lib')
 
                 new_code_div = pre_rendered_html.new_tag("code")
@@ -232,7 +236,9 @@ def write_manifest(data):
 def write(identity, data, tag=None):
     try:
         if os.path.exists(common.reportDir + "/report.html"):
-            pre_rendered = open(common.reportDir + "/report.html",'r').read()
+            with open(common.reportDir + "/report.html",'r') as f:
+                pre_rendered = f.read()
+
             pre_rendered_html = BeautifulSoup(pre_rendered,'html5lib')
 
             if tag is not None:
@@ -254,7 +260,9 @@ def write(identity, data, tag=None):
 def write_counters():
     try:
         if os.path.exists(common.reportDir + "/report.html"):
-            pre_rendered = open(common.reportDir + "/report.html",'r').read()
+            with open(common.reportDir + "/report.html",'r') as f:
+                pre_rendered = f.read()
+
             pre_rendered_html = BeautifulSoup(pre_rendered,'html5lib')
             warnings =  len(re.findall(r'badger-warning', str(pre_rendered_html)))
             information =  len(re.findall(r'badger-success', str(pre_rendered_html)))
@@ -287,7 +295,9 @@ def write_badger(identity, sev, data, extra=None):
     if common.reportInitSuccess:
         try:
             if os.path.exists(common.reportDir + "/report.html"):
-                pre_rendered = open(common.reportDir + "/report.html",'r').read()
+                with open(common.reportDir + "/report.html",'r') as f:
+                    pre_rendered = f.read()
+
                 pre_rendered_html = BeautifulSoup(pre_rendered,'html5lib')
 
                 new_div_tag = pre_rendered_html.new_tag("div")
@@ -346,7 +356,9 @@ def write_badger(identity, sev, data, extra=None):
 def write_adb_commands(identity, sev, data, extra=None, infobartext=None):
     try:
         if os.path.exists(common.reportDir + "/report.html"):
-            pre_rendered = open(common.reportDir + "/report.html",'r').read()
+            with open(common.reportDir + "/report.html",'r') as f:
+                pre_rendered = f.read()
+
             pre_rendered_html = BeautifulSoup(pre_rendered,'html5lib')
 
             new_div_tag = pre_rendered_html.new_tag("div")
