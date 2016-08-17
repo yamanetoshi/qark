@@ -45,7 +45,7 @@ def verify_custom_permissions():
         if 'android:protectionLevel' in node.attributes.keys():
             if (node.attributes['android:protectionLevel'].value == 'signature' or node.attributes['android:protectionLevel'].value == 'signatureOrSystem'):
                 #TODO - Add API check to ignore this for unaffected versions
-                if common.minSdkVersion<21:
+                if int(common.minSdkVersion)<21:
                     report.write_badger("manifest-issues", modules.common.Severity.WARNING,  "Permission: " + node.attributes['android:name'].value + common.config.get('qarkhelper', 'PERM_SNATCH_SIG'))
                     logger.warn("Permission: " + node.attributes['android:name'].value + " " + common.config.get('qarkhelper', 'PERM_SNATCH_SIG') )
         else:
