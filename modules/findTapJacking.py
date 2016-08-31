@@ -12,7 +12,7 @@ import lib.plyj.parser as plyj
 import lib.plyj.model as m
 import re
 
-tree=''
+findTapJacking_tree=''
 currentFile=''
 
 def start(path):
@@ -80,11 +80,11 @@ def find_layout(path):
 
 def find_java_buttons(xmlFile,buttonId):
 	# Need find all the Buttons declared in the Java classes
-	global tree
+	global findTapJacking_tree
 	global currentFile
 
 	for j in common.java_files:
 		currentFile=j
 		common.logger.debug("FILE: " + str(j))
-		tree=parser.parse_file(j)
+		findTapJacking_tree=parser.parse_file(j)
 	return

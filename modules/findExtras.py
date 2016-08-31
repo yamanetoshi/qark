@@ -19,7 +19,7 @@ from modules import constantResolver
 from xml.dom import minidom
 
 parser = plyj.Parser()
-tree=''
+findExtras_tree=''
 extras=[]
 extras.append([])
 
@@ -29,7 +29,7 @@ def find_extras(stub_file_name,entry):
 	"""
 	Find all extras given a filename
 	"""
-	global tree
+	global findExtras_tree
 	global extras
 
 	extras=[]
@@ -47,11 +47,11 @@ def find_extras(stub_file_name,entry):
 		if re.search(r''+str(stub_file_name)+r'$',str(j)):
 			unmatched=False
 			try:
-				tree = parser.parse_file(j)
+				findExtras_tree = parser.parse_file(j)
 			except Exception as e:
 				common.logger.error("Tree exception: " + str(e))
-			if tree is not None:
-				for type_decl in tree.type_declarations:
+			if findExtras_tree is not None:
+				for type_decl in findExtras_tree.type_declarations:
 					if type(type_decl) is m.ClassDeclaration:
 						entries = []
 						for t in type_decl.body:
@@ -159,10 +159,10 @@ def find_methods_for_extras(t,file_name,entry):
 	return
 
 def extras_from_instances(t,methods,file_name):
-	global tree
+	global findExtras_tree
 
-	if tree is not None:
-		for type_decl in tree.type_declarations:
+	if findExtras_tree is not None:
+		for type_decl in findExtras_tree.type_declarations:
 			if type(type_decl) is m.ClassDeclaration:
 				for b in type_decl.body:
 					if type(b) is m.ClassDeclaration:
@@ -189,7 +189,7 @@ def extras_from_vars(token,methods,file_name):
 	'''
 	Looks for where data may be extracted from variables, which originated as extras, to derive key names
 	'''
-	global tree
+	global findExtras_tree
 	global extras
 
 	single_extra=['getBooleanExtra']
@@ -261,7 +261,7 @@ def extras_from_vars(token,methods,file_name):
 											continue
 										else:
 											try:
-												resolved_constant=constantResolver.string_finder(tree,a.value)
+												resolved_constant=constantResolver.string_finder(findExtras_tree,a.value)
 											except Exception as e:
 												common.logger.error("Problem trying to resolve constants: " + str(e))
 											if resolved_constant is not None:

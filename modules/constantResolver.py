@@ -11,29 +11,29 @@ from modules import common
 import re
 
 parser = plyj.Parser()
-tree=''
+constantResolver_tree=''
 
 def main(file_name,value):
 	'''
 	Parses file to determine where to look for constants
 	'''
-	global tree
+	global constantResolver_tree
 
 	file_found=False
 	var_found=''
 
 	try:
-		tree = parser.parse_file(file_name)
+		constantResolver_tree = parser.parse_file(file_name)
 	except Exception as e:
 		common.logger.error("Tree exception: " + str(e))
 	try:
-		if tree is not None:
+		if constantResolver_tree is not None:
 			if var_found is not None:
 				if len(var_found)==0:
 					value_dots=value.split('.')
 					if value_dots is not None:
 						if len(value_dots)>0:
-							for i in tree.import_declarations:
+							for i in constantResolver_tree.import_declarations:
 								import_dots=i.name.value.split('.')
 								if import_dots is not None:
 									if import_dots[len(import_dots)-1]==value_dots[0]:
@@ -64,7 +64,7 @@ def main(file_name,value):
 				else:	
 					print "Following string_finder"
 					try:
-						string_finder(tree,value)
+						string_finder(constantResolver_tree,value)
 					except Exception as e:
 						common.logger.error("Problem trying to find strings in tree in constantResolver.py: " + str(e))
 				if var_found is not None:

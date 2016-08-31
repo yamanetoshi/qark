@@ -19,7 +19,7 @@ from lib.pubsub import pub
 from common import terminalPrint
 
 parser = plyj.Parser()
-tree=''
+certVaridation_tree=''
 filename=''
 sslSessions=[]
 verifyIteration=0
@@ -36,7 +36,7 @@ def validate(queue,height):
     """
     #writer1 = common.Writer((0, height))
     results = []
-    global tree
+    global certVaridation_tree
     global parser
     global filename
     global warningGiven
@@ -49,15 +49,15 @@ def validate(queue,height):
         pub.sendMessage('progress', bar='X.509 Validation', percent=round(count*100/common.java_files.__len__()))
         filename=str(j)
         try:
-            tree=parser.parse_file(j)
+            certVaridation_tree=parser.parse_file(j)
         except Exception as e:
             continue
             # No need to log this since we now warn potential parsing errors on screen and provide details in the report.
-        if tree is None:
+        if certVaridation_tree is None:
             results.append("Some files may not be parsed correctly. For a list of such files, please review the final report.")
         else:
             try:
-                for type_decl in tree.type_declarations:
+                for type_decl in certVaridation_tree.type_declarations:
                     if type(type_decl) is m.ClassDeclaration:
                         for t in type_decl.body:
                             try:
@@ -214,14 +214,14 @@ def recursive_find_verify(q,filename,results):
     Find all .verify methods 
     '''
     global sslSessions
-    global tree
+    global certVaridation_tree
     global verifyIteration
     global warningGiven
 
     if len(sslSessions)>0:
         if verifyIteration==0:
             try:
-                for type_decl in tree.type_declarations:
+                for type_decl in certVaridation_tree.type_declarations:
                     if type(type_decl) is m.ClassDeclaration:
                         for t in type_decl.body:
                             if type(t) is m.MethodInvocation:

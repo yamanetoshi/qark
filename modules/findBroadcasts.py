@@ -22,13 +22,13 @@ logger = logging.getLogger(__name__)
 
 parser = plyj.Parser()
 current_file=''
-tree=''
+findBroadcast_tree=''
 importFound='False'
 
 def main(queue):
 	global current_file
 	global parser
-	global tree
+	global findBroadcast_tree
 	results = []
 	count = 0
 
@@ -38,10 +38,10 @@ def main(queue):
 		pub.sendMessage('progress', bar="Broadcast issues", percent=round(count*100/common.java_files.__len__()))
 		current_file=j
 		try:
-			tree=parser.parse_file(j)
-			if type(tree) is not None:
-				if hasattr(tree,'type_declarations'):
-					for type_decl in tree.type_declarations:
+			findBroadcast_tree=parser.parse_file(j)
+			if type(findBroadcast_tree) is not None:
+				if hasattr(findBroadcast_tree,'type_declarations'):
+					for type_decl in findBroadcast_tree.type_declarations:
 						if type(type_decl) is m.ClassDeclaration:
 							for t in type_decl.body:
 								try:
@@ -70,10 +70,10 @@ def local_broadcast_manager_imported():
 	#To be thorough,we need to run through the whole import dance, but we'll save that for planned refactor
 	#This will have to do for now
 
-	global tree
+	global findBroadcast_tree
 	global importFound
 
-	for imp_decl in tree.import_declarations:
+	for imp_decl in findBroadcast_tree.import_declarations:
 		if str(imp_decl.name.value)=="android.support.v4.content.LocalBroadcastManager":
 			importFound=True
 		elif str(imp_decl.name.value)=="android.support.v4.content.*":
@@ -112,7 +112,7 @@ def recursive_broadcast_finder(t,results):
 				#We need to ensure this isn't a local broadcast
 				#TODO - There is a lot more we need to do to fully qualify this, but should be good enough for now
 				if local_broadcast_manager_imported()==True:
-					common.logger.debug(tree)
+					common.logger.debug(findBroadcast_tree)
 				else:
 					report.write_badger("manifest-issues", modules.common.Severity.INFO, "NO IMPORT")
 					common.logger.debug("FOUND A sendBroadcast")

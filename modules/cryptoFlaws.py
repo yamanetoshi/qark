@@ -18,11 +18,11 @@ from lib.pubsub import pub
 from common import terminalPrint
 
 parser = plyj.Parser()
-tree=''
+cryptFlaws_tree=''
 
 def main(queue):
 	global parser
-	global tree
+	global cryptFlaws_tree
 	results = []
 	count = 0
 
@@ -33,11 +33,11 @@ def main(queue):
 		count = count + 1
 		pub.sendMessage('progress', bar='Crypto issues', percent=round(count*100/common.java_files.__len__()))
 		try:
-			tree=parser.parse_file(j)
-			if tree is not None:
+			cryptFlaws_tree=parser.parse_file(j)
+			if cryptFlaws_tree is not None:
 				#if re.search(r'\.getInstance\(',str(tree)):
 				#	print "YES"
-				for type_decl in tree.type_declarations:
+				for type_decl in cryptFlaws_tree.type_declarations:
 					if type(type_decl) is m.ClassDeclaration:
 						for t in type_decl.body:
 							try:

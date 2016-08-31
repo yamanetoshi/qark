@@ -19,7 +19,7 @@ from common import terminalPrint
 
 common.logger = logging.getLogger()
 
-tree=''
+findPending_tree=''
 current_file=''
 parser = plyj.Parser()
 method_list=[]
@@ -35,7 +35,7 @@ def start(queue,height):
 	Start finding pending intents
 	"""
 	results = []
-	global tree
+	global findPending_tree
 	global current_file
 	count = 0
 
@@ -45,11 +45,11 @@ def start(queue,height):
 		count = count + 1
 		pub.sendMessage('progress', bar='Pending Intents', percent=round(count*100/common.java_files.__len__()))
 		current_file=j
-		tree=parser.parse_file(j)
+		findPending_tree=parser.parse_file(j)
 		#TODO - Need to add scanning of the imports, to see if Intent or PendingIntent is extended, was working on it, 
 		#but the one issue where it arose was non-trivial, so I gave up for now
-		if hasattr(tree,'type_declarations'):
-			for type_decl in tree.type_declarations:
+		if hasattr(findPending_tree,'type_declarations'):
+			for type_decl in findPending_tree.type_declarations:
 				if type(type_decl) is m.ClassDeclaration:
 					for t in type_decl.body:
 						for f in t._fields:
@@ -209,8 +209,8 @@ def find_class(classname,results):
 	Find the class name
 	"""
 
-	if hasattr(tree,'type_declarations'):
-		for type_decl in tree.type_declarations:
+	if hasattr(findPending_tree,'type_declarations'):
+		for type_decl in findPending_tree.type_declarations:
 			if type(type_decl) is m.ClassDeclaration:
 				if str(type_decl.name) == str(classname):
 					found=True
@@ -283,11 +283,11 @@ def find_intent(intent,results):
 	"""
 	#TODO - This section is ugly and needs to be refactored
 	#Looking for the intent used in the pending intent
-	global tree
+	global findPending_tree
 	found=False
 	explicit=False
-	if hasattr(tree,'type_declarations'):
-		for type_decl in tree.type_declarations:
+	if hasattr(findPending_tree,'type_declarations'):
+		for type_decl in findPending_tree.type_declarations:
 			if type(type_decl) is m.ClassDeclaration:
 				for t in type_decl.body:
 					if not found:

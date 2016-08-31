@@ -22,7 +22,7 @@ from modules import findSupers
 parser = plyj.Parser()
 tracker = []
 component_type = ''
-tree = ''
+findMedhotd_tree = ''
 entries = []
 taint_list = ['getIntent']
 current_entry = ''
@@ -69,21 +69,21 @@ def tree_parser(j, comp_type):
 	"""
 	tree parser - parses Java files and creates a readable tree of elements which can be iterated over
 	"""
-	global tree
+	global findMedhotd_tree
 	global parser
 
 	try:
-		tree = parser.parse_file(j)
+		findMedhotd_tree = parser.parse_file(j)
 	except Exception as e:
 		common.logger.error("Tree exception: " + str(e))
-	if tree is None:
+	if findMedhotd_tree is None:
 		common.logger.error("Unable to create tree for parsing")
 		common.logger.error("File: " + str(j) + " could not be parsed properly, which will negatively impact results")
 	else:
 		common.logger.info("Checking this file for vulns: " + str(j))
 		try:
-			find_local_method_declarations(tree)
-			find_entry(tree, comp_type)
+			find_local_method_declarations(findMedhotd_tree)
+			find_entry(findMedhotd_tree, comp_type)
 		except Exception as e:
 			if common.source_or_apk == 2:
 				common.logger.error("---Oh Snap. Parsing error >.<" + str(e))
@@ -553,9 +553,9 @@ def wtf_is(token):
 	"""
 	Identifies the type of token
 	"""
-	global tree
+	global findMedhotd_tree
 	global current_entry
-	for type_decl in tree.type_declarations:
+	for type_decl in findMedhotd_tree.type_declarations:
 		if type(type_decl) is m.ClassDeclaration:
 			common.logger.debug("Checking for token definition: " + str(token))
 			for t in type_decl.body:
@@ -580,7 +580,7 @@ def is_global(token):
 	Checks if a given token is global in context
 	"""
 	foundglobal = False
-	for type_decl in tree.type_declarations:
+	for type_decl in findMethod_tree.type_declarations:
 		for t in type_decl.body:
 			if type(t) is m.FieldDeclaration:
 				for f in t.variable_declarators:
@@ -978,7 +978,7 @@ def import_checker(imp, token, method, argslength):
 	"""
 	Import checker
 	"""
-	global tree
+	global findMedhotd_tree
 	global current_file
 	new_taint_list = []
 	first_pass = True
@@ -987,7 +987,7 @@ def import_checker(imp, token, method, argslength):
 	#Another way to approach this could be to simply look for where the method name is declared and see if any of the possibilities are in the sink list
 	#or, just check if any of the imports along the tree are a match, then go from there
 	#Does the file containing the tainted sink, import the class containing the "actual" sink?
-	for imp_decl in tree.import_declarations:
+	for imp_decl in findMedhotd_tree.import_declarations:
 		if hasattr(token.target, 'value'):
 			#May be able to remove this assignment, if only used once
 			obj_inst = obj_instance_of(token)
@@ -1101,7 +1101,7 @@ def obj_instance_of(token):
 	"""
 	i_of = None
 	#This is to determine what type this object is
-	for type_decl in tree.type_declarations:
+	for type_decl in findMethod_tree.type_declarations:
 		if type(type_decl) is m.ClassDeclaration:
 			for t in type_decl.body:
 				if hasattr(t, 'body'):
@@ -1464,7 +1464,7 @@ def parse_method_invocation(token):
 	"""
 	Parse token type - Method invocation
 	"""
-	global tree
+	global findMedhotd_tree
 	global local_meth_decls
 	global entries
 	global component_type
@@ -1473,7 +1473,7 @@ def parse_method_invocation(token):
 	if is_super(token):
 		#Returns a bool of whether a sensitive method was encountered
 		try:
-			if findSupers.find_extensions(tree,token):
+			if findSupers.find_extensions(findMedhotd_tree,token):
 				#Need filename and current entry point
 				try:
 					findExtras.find_extras(current_file,current_entry)
@@ -1498,21 +1498,21 @@ def parse_method_invocation(token):
 			if token.name not in local_meth_decls:
 			#BUG - Problem with this logic is it assumes the entire class has already been parsed
 			#To avoid this, we use an ugly hack that should cause the whole class to be parsed
-				recursive_method_finder(tree)
+				recursive_method_finder(findMedhotd_tree)
 				#Yes this could be re-ordered, but seems more efficient, since it saves the recursion time
 		if token.name not in entries:
-			if type(tree) is not None:
+			if type(findMedhotd_tree) is not None:
 				closeEnough=False
 			#From here we need to create the call tree in the local file
 				try:
 					common.logger.debug("Parsing local method declarations")
-					closeEnough=localMethodDeclarations.main(token, tree, current_file)
+					closeEnough=localMethodDeclarations.main(token, findMedhotd_tree, current_file)
 				except Exception as e:
 					common.logger.error("Problem trying to look for locally declared methods in findMethods.py: " + str(e))
 				if not closeEnough:
 					try:
 						common.logger.debug("Parsing external method declarations")
-						externalMethodDeclarations.main(token, tree, current_file)
+						externalMethodDeclarations.main(token, findMedhotd_tree, current_file)
 					except Exception as e:
 						common.logger.error('Problem running externalMethodDeclarations module from findMethods.py: ' + str(e))
 			else:
@@ -1530,7 +1530,7 @@ def parse_method_invocation(token):
 						if is_tainted(getattr(token, f)):
 							common.logger.debug("TAINTED: " + str(token))
 							try:
-								sink = common.sink_list_check(token,tree)
+								sink = common.sink_list_check(token,findMedhotd_tree)
 							except Exception as e:
 								common.logger.error("Problem trying to find sink: " + str(e))
 							if sink != None:
